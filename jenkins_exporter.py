@@ -15,6 +15,8 @@ DEBUG = int(os.environ.get('DEBUG', '0'))
 
 COLLECTION_TIME = Summary('jenkins_collector_collect_seconds', 'Time spent to collect metrics from Jenkins')
 
+JENKINS_INITIAL_ADMIN_PASSWORD_FILE = '/var/jenkins_home/secrets/initialAdminPassword'
+
 class JenkinsCollector(object):
     # The build statuses we want to export about.
     statuses = ["lastBuild", "lastCompletedBuild", "lastFailedBuild",
@@ -25,6 +27,12 @@ class JenkinsCollector(object):
         self._target = target.rstrip("/")
         self._user = user
         self._password = password
+        if not password:
+            try:
+                self._password = open(JENKINS_INITIAL_ADMIN_PASSWORD_FILE, "r").read().rstrip("\n")
+            except IOError:
+                print "Could not read jenkins password file:", JENKINS_INITIAL_ADMIN_PASSWORD_FILE
+        print "jenkins admin password:", repr(self._password)
         self._insecure = insecure
 
     def collect(self):
