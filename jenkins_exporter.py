@@ -32,7 +32,7 @@ class JenkinsCollector(object):
                 self._password = open(JENKINS_INITIAL_ADMIN_PASSWORD_FILE, "r").read().rstrip("\n")
             except IOError:
                 print "Could not read jenkins password file:", JENKINS_INITIAL_ADMIN_PASSWORD_FILE
-        print "jenkins admin password:", repr(self._password)
+        print "Jenkins admin password:", repr(self._password)
         self._insecure = insecure
 
     def collect(self):
@@ -76,7 +76,7 @@ class JenkinsCollector(object):
             if DEBUG:
                 pprint(response.text)
             if response.status_code != requests.codes.ok:
-                raise Exception("Call to url %s failed with status: %s" % (myurl, response.status_code))
+                exit("URL %s returned status: %s" % (myurl, response.status_code))
             result = response.json()
             if DEBUG:
                 pprint(result)
